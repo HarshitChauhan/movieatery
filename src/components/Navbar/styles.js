@@ -17,5 +17,20 @@ export default makeStyles((theme) => ({
       display: 'none',
     },
   },
+  drawer: {
+    [theme.breakpoints.up('sm')]: {
+      width: '200px',
+      flexShrink: '0',
+    },
+  },
+  drawerPaper: {
+    width: '200px',
+  },
+  linkButton: {
+    '&hover': {
+      color: 'white !important',
+      textDecoration: 'none',
+    },
+  },
 }));
 
