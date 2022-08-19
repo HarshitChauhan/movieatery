@@ -5,22 +5,21 @@ import { useTheme } from '@mui/styles';
 import useStyles from './styles';
 import movieateryLogoBlue from './MovieateryLogoBlue.png';
 import movieateryLogoRed from './MovieateryLogoRed.png';
+import { useGetGenresQuery } from '../../services/TMDB';
+import genreIcons from '../../assets/genres';
 
 const categories = [
   { label: 'Popular', value: 'popular' },
-  { label: 'Top Rated', value: 'top_rated' },
+  { label: 'Top Rated', value: 'toprated' },
   { label: 'Upcoming', value: 'upcoming' },
-];
-const genres = [
-  { label: 'Comedy', value: 'comedy' },
-  { label: 'Action', value: 'action' },
-  { label: 'Horror', value: 'horror' },
-  { label: 'Animation', value: 'animation' },
 ];
 
 function Sidebar({ setMobileOpen }) {
   const classes = useStyles();
   const theme = useTheme();
+  const { data, isFetching } = useGetGenresQuery();
+
+  // console.log(data);
 
   return (
     <>
@@ -37,9 +36,9 @@ function Sidebar({ setMobileOpen }) {
         { categories.map(({ label, value }) => (
           <Link key={value} className={classes.links} to="/">
             <ListItem onClick={(() => {})} button>
-              {/* <ListItemIcon>
-                <img src="https://fontmeme.com/temporary/4c7b78b8f8f9d04764b6eea7bab831c2.png" className={classes.genreImages} height={30} alt={label} />
-              </ListItemIcon> */}
+              <ListItemIcon>
+                <img src={genreIcons[label.toLowerCase()]} className={classes.genreImages} height={30} alt={label} />
+              </ListItemIcon>
               <ListItemText primary={label} />
             </ListItem>
           </Link>
@@ -48,16 +47,21 @@ function Sidebar({ setMobileOpen }) {
       <Divider />
       <List>
         <ListSubheader>Genres</ListSubheader>
-        { genres.map(({ label, value }) => (
-          <Link key={value} className={classes.links} to="/">
-            <ListItem onClick={(() => {})} button>
-              {/* <ListItemIcon>
-                <img src="https://fontmeme.com/temporary/4c7b78b8f8f9d04764b6eea7bab831c2.png" className={classes.genreImages} height={30} alt={label} />
-              </ListItemIcon> */}
-              <ListItemText primary={label} />
-            </ListItem>
-          </Link>
-        ))}
+        { isFetching ? (
+          <Box display="flex" justifyContent="center">
+            <CircularProgress size="4rem" />
+          </Box>
+        ) : (
+          data.genres.map(({ name, id }) => (
+            <Link key={name} className={classes.links} to="/">
+              <ListItem onClick={(() => {})} button>
+                <ListItemIcon>
+                  <img src={genreIcons[name.toLowerCase()]} className={classes.genreImages} height={30} alt={name} />
+                </ListItemIcon>
+                <ListItemText primary={name} />
+              </ListItem>
+            </Link>
+          )))}
       </List>
     </>
   );
