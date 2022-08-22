@@ -8,8 +8,8 @@ import MovieList from '../MovieList/MovieList';
 
 function Movies() {
   const [pageNumber, setPageNumber] = useState(1);
-  const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
-  const { data, error, isFetching } = useGetMoviesQuery({ genreIdOrCategoryName, pageNumber });
+  const { genreIdOrCategoryName, searchQuery } = useSelector((state) => state.currentGenreOrCategory);
+  const { data, error, isFetching } = useGetMoviesQuery({ genreIdOrCategoryName, pageNumber, searchQuery });
   // console.log(data);
 
   if (isFetching) {

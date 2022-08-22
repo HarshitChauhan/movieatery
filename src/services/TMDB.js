@@ -10,7 +10,7 @@ export const tmdbApi = createApi({
   endpoints: (builder) => ({
     // Get movies by [type]
     getMovies: builder.query({
-      query: ({ genreIdOrCategoryName, pageNumber }) => {
+      query: ({ genreIdOrCategoryName, pageNumber, searchQuery }) => {
         // Get Movies by Category
         if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'string') {
           return `movie/${genreIdOrCategoryName}?page=${pageNumber}&api_key=${tmdbApiKey}`;
@@ -19,6 +19,11 @@ export const tmdbApi = createApi({
         // Get Movies by Genre
         if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'number') {
           return `discover/movie?with_genres=${genreIdOrCategoryName}&page=${pageNumber}&api_key=${tmdbApiKey}`;
+        }
+
+        // Get Movies by Search
+        if (searchQuery) {
+          return `search/movie?query=${searchQuery}&page=${pageNumber}&api_key=${tmdbApiKey}`;
         }
 
         // Get Popular Movies for HomePage
