@@ -2,6 +2,8 @@ import React from 'react';
 import { Divider, List, ListItem, ListItemText, ListSubheader, ListItemIcon, Box, CircularProgress } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import useStyles from './styles';
 import movieateryLogoBlue from './MovieateryLogoBlue.png';
 import movieateryLogoRed from './MovieateryLogoRed.png';
@@ -18,8 +20,8 @@ function Sidebar({ setMobileOpen }) {
   const classes = useStyles();
   const theme = useTheme();
   const { data, isFetching } = useGetGenresQuery();
-
-  // console.log(data);
+  const dispatch = useDispatch();
+  const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
 
   return (
     <>
@@ -35,7 +37,7 @@ function Sidebar({ setMobileOpen }) {
         <ListSubheader>Categories</ListSubheader>
         { categories.map(({ label, value }) => (
           <Link key={value} className={classes.links} to="/">
-            <ListItem onClick={(() => {})} button>
+            <ListItem onClick={(() => dispatch(selectGenreOrCategory(value)))} button>
               <ListItemIcon>
                 <img src={genreIcons[label.toLowerCase()]} className={classes.genreImages} height={30} alt={label} />
               </ListItemIcon>
@@ -54,7 +56,7 @@ function Sidebar({ setMobileOpen }) {
         ) : (
           data.genres.map(({ name, id }) => (
             <Link key={name} className={classes.links} to="/">
-              <ListItem onClick={(() => {})} button>
+              <ListItem onClick={(() => dispatch(selectGenreOrCategory(id)))} button>
                 <ListItemIcon>
                   <img src={genreIcons[name.toLowerCase()]} className={classes.genreImages} height={30} alt={name} />
                 </ListItemIcon>
