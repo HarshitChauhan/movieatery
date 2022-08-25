@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Modal, Button, Grid, CircularProgress, ButtonGroup, useMediaQuery, Rating } from '@mui/material';
 import { Movie as MovieIcon, Theaters, Language, PlusOne, Favorite, FavoriteBorderOutlined, Remove, ArrowBack } from '@mui/icons-material';
-import { Link, useParams, userParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, userParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import useStyles from './styles';
-import { useGetMovieQuery, useGetRecommendationsQuery } from '../../services/TMDB';
+import { useGetMovieQuery, useGetRecommendationsQuery, useGetListQuery } from '../../services/TMDB';
 import genreIcons from '../../assets/genres';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import MovieList from '../MovieList/MovieList';
@@ -14,21 +14,32 @@ import { userSelector } from '../../features/auth';
 function MovieInformation() {
   const classes = useStyles();
   const { id } = useParams();
+  const { user } = useSelector(userSelector);
   const { data, error, isFetching } = useGetMovieQuery(id);
   const { data: recommendations, isFetching: isRecommendationsFetching } = useGetRecommendationsQuery({ list: '/recommendations', movie_id: id });
+  const { data: favoriteMovies } = useGetListQuery({ listName: 'favorite/movies', accountId: user.id, sessionId: localStorage.getItem('session_id'), pageNumber: 1 });
+  const { data: watchlistMovies } = useGetListQuery({ listName: 'watchlist/movies', accountId: user.id, sessionId: localStorage.getItem('session_id'), pageNumber: 1 });
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector(userSelector);
   const [open, setOpen] = useState(false);
-  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieFavorite, setIsMovieFavorite] = useState(false);
   const [isMovieWatchlisted, setIsMovieWatchlisted] = useState(false);
+
+  useEffect(() => {
+    setIsMovieFavorite(!!favoriteMovies?.results?.find((movie) => movie?.id === data?.id));
+  }, [favoriteMovies, data]);
+
+  useEffect(() => {
+    setIsMovieWatchlisted(!!watchlistMovies?.results?.find((movie) => movie?.id === data?.id));
+  }, [watchlistMovies, data]);
 
   const addToFavorites = async () => {
     await axios.post(`https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${process.env.REACT_APP_TMDB_KEY}&session_id=${localStorage.getItem('session_id')}`, {
       media_type: 'movie',
       media_id: id,
-      favorite: !isMovieFavorited,
+      favorite: !isMovieFavorite,
     });
-    setIsMovieFavorited((prev) => !prev);
+    setIsMovieFavorite((prev) => !prev);
   };
 
   const addToWatchlist = async () => {
@@ -106,10 +117,10 @@ function MovieInformation() {
             </Grid>
             <Grid item xs={12} sm={6} className={classes.buttonsContainer}>
               <ButtonGroup size="medium" variant="outlined">
-                <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>{isMovieFavorited ? 'Unfavorite' : 'Favorite'}</Button>
+                <Button onClick={addToFavorites} endIcon={isMovieFavorite ? <FavoriteBorderOutlined /> : <Favorite />}>{isMovieFavorite ? 'Unfavorite' : 'Favorite'}</Button>
                 <Button onClick={addToWatchlist} endIcon={isMovieWatchlisted ? <Remove /> : <PlusOne />}>{isMovieWatchlisted ? 'Remove' : 'Watchlist'}</Button>
                 <Button endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
-                  <Typography component={Link} to="/" color="inherit" variant="subtitle2" style={{ textDecoration: 'none' }}>Back</Typography>
+                  <Typography onClick={() => navigate(-1)} color="inherit" variant="subtitle2" style={{ textDecoration: 'none' }}>Back</Typography>
                 </Button>
               </ButtonGroup>
             </Grid>

@@ -5,9 +5,10 @@ import { ArrowBack } from '@mui/icons-material';
 import useStyles from './styles';
 import { useGetActorDetailsQuery, useGetMoviesByActorIdQuery } from '../../services/TMDB';
 import MovieList from '../MovieList/MovieList';
+import Pagination from '../Pagination/Pagination';
 
 function Actors() {
-  const pageNumber = 1;
+  const [pageNumber, setPageNumber] = useState(1);
   const classes = useStyles();
   const { id } = useParams();
   const { data, isFetching, error } = useGetActorDetailsQuery(id);
@@ -56,6 +57,8 @@ function Actors() {
         {actorMovies
           ? <MovieList movies={actorMovies} numberOfMovies={12} />
           : <Box>Sorry, nothing is found.</Box>}
+        <Pagination currentPage={pageNumber} setPage={setPageNumber} totalPages={actorMovies?.total_pages} />
+
       </Box>
     </>
   );
