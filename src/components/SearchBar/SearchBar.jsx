@@ -7,13 +7,14 @@ import useStyles from './styles';
 import { searchMovie } from '../../features/currentGenreOrCategory';
 
 function SearchBar() {
+  const pageNumber = 1;
   const [query, setQuery] = useState('');
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      dispatch(searchMovie(query));
+      dispatch(searchMovie(query, pageNumber));
     }
   };
 
