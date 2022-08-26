@@ -79,7 +79,7 @@ function Navbar() {
               </Button>
             )}
           </div>
-          {isMobileDevice && <SearchBar />}
+          {/* {isMobileDevice && <SearchBar />} */}
         </Toolbar>
       </AppBar>
 
