@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, List, ListItem, ListItemText, ListSubheader, ListItemIcon, Box, CircularProgress } from '@mui/material';
+import { Divider, List, ListItem, ListItemText, ListSubheader, ListItemIcon, Box, CircularProgress, useMediaQuery } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import movieateryLogoBlue from './MovieateryLogoBlue.png';
 import movieateryLogoRed from './MovieateryLogoRed.png';
 import { useGetGenresQuery } from '../../services/TMDB';
 import genreIcons from '../../assets/genres';
+import SearchBar from '../SearchBar/SearchBar';
 
 const categories = [
   { label: 'Popular', value: 'popular' },
@@ -22,6 +23,7 @@ function Sidebar({ setMobileOpen }) {
   const { data, isFetching } = useGetGenresQuery();
   const dispatch = useDispatch();
   const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
+  const isMobileDevice = useMediaQuery('(max-width:600px)');
 
   return (
     <>
@@ -32,6 +34,8 @@ function Sidebar({ setMobileOpen }) {
           alt="Movieatery logo"
         />
       </Link>
+      <Divider />
+      {isMobileDevice && <SearchBar />}
       <Divider />
       <List>
         <ListSubheader>Categories</ListSubheader>

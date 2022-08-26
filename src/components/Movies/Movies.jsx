@@ -3,7 +3,7 @@ import { Box, CircularProgress, Typography, useMediaQuery } from '@mui/material'
 import { useSelector } from 'react-redux';
 import { useGetMoviesQuery } from '../../services/TMDB';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
-
+import FeaturedMovie from '../FeaturedMovie/FeaturedMovie';
 import MovieList from '../MovieList/MovieList';
 import Pagination from '../Pagination/Pagination';
 
@@ -42,7 +42,8 @@ function Movies() {
 
   return (
     <div>
-      <MovieList movies={data} numberOfMovies={numberOfMovies} />
+      <FeaturedMovie movie={data.results[0]} />
+      <MovieList movies={data} numberOfMovies={numberOfMovies} excludeFirst />
       <Pagination currentPage={pageNumber} setPage={setPageNumber} totalPages={data.total_pages} />
     </div>
   );
