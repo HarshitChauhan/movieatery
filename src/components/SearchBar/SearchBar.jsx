@@ -15,6 +15,7 @@ function SearchBar() {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       dispatch(searchMovie(query, pageNumber));
+      setQuery('');
     }
   };
 
